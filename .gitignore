@@ -1,0 +1,6 @@
+*/__pycache__/*
+__pycache__/*
+bin/*
+lib/*
+pyvenv.cfg
+.idea/*
