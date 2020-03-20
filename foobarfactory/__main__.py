@@ -1,5 +1,5 @@
 from abc import ABC
-from collections import defaultdict
+from collections import Counter
 from dataclasses import dataclass
 from enum import Enum, auto
 import random
@@ -66,7 +66,7 @@ def user_input(factories, input_text='Please pick an activity'):
         return user_input(factories, 'Something went wrong, please pick an activity')
 
 
-class Product(ABC):
+class Product:
     def __init__(self, serial_number):
         self.serial_number = serial_number
         self.name = ''
@@ -276,7 +276,7 @@ class ProductMachine:
         # Checking if changing of activity
         if not self.state:
             self.state = idx
-        elif self.state and self.state != idx:
+        elif self.state != idx:
             print('Robot is changing activity')
             time.sleep(5 / CONFIG_GAME_SPEED)
             print('Robot changed activity')
@@ -315,18 +315,13 @@ class Production(ABC):
 
     @property
     def items_summary(self):
-        d = defaultdict(int)
+        cnt = Counter()
         for item in self.available_items:
-            d[item.name] += 1
+            cnt[item.name] += 1
 
-        result = ''
-        i = 0
-        for el, nb in d.items():
-            result += str(nb) + ' ' + el
-            i += 1
-            result += '' if i == len(d) else ' - '
-
-        return 'no item' if not d else result
+        if not cnt:
+            return 'no item'
+        return " - ".join(f"{nb} {el}" for el, nb in cnt.items())
 
     def run(self):
         self.start()
